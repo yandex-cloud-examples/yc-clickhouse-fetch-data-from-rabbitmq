@@ -1,5 +1,3 @@
-# Название сценария
+# Получение данных из RabbitMQ в Yandex Managed Service for ClickHouse®
 
-Описание сценария и инструкция по его применению.
-
-Для практических руководств обязательна ссылка на документацию.
+В кластер [Managed Service for ClickHouse®](https://yandex.cloud/ru/docs/managed-clickhouse) вы можете поставлять данные из RabbitMQ в реальном времени. Managed Service for ClickHouse® будет автоматически вставлять в таблицу на [движке RabbitMQ](https://clickhouse.com/docs/ru/engines/table-engines/integrations/rabbitmq) данные, поступающие на определенные точки обмена указанных очередей RabbitMQ. Подготовка инфраструктуры для виртуальной машины и Managed Service for ClickHouse® через Terraform описана в [практическом руководстве](https://yandex.cloud/ru/docs/tutorials/dataplatform/fetch-data-from-rabbitmq), необходимый для настройки конфигурационный файл [clickhouse-cluster-and-vm-for-rabbitmq.tf](clickhouse-cluster-and-vm-for-rabbitmq.tf) расположен в этом репозитории.
