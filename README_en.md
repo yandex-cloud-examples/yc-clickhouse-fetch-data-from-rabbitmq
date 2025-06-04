@@ -1,0 +1,3 @@
+# Fetching data from RabbitMQ to Yandex Managed Service for ClickHouse®
+
+You can deliver data from RabbitMQ to your [Managed Service for ClickHouse®](https://yandex.cloud/en/docs/managed-clickhouse) cluster in real time. Managed Service for ClickHouse® will be automatically inserting the data into [RabbitMQ](https://clickhouse.com/docs/ru/engines/table-engines/integrations/rabbitmq) tables. See [this tutorial](https://yandex.cloud/en/docs/tutorials/dataplatform/fetch-data-from-rabbitmq) to learn how to prepare the infrastructure for your VM and Managed Service for Apache ClickHouse® using Terraform. This repository contains the configuration file you will need: [clickhouse-cluster-and-vm-for-rabbitmq.tf](clickhouse-cluster-and-vm-for-rabbitmq.tf).
