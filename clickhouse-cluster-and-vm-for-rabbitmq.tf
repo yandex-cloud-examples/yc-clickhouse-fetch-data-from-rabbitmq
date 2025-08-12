@@ -83,16 +83,23 @@ resource "yandex_mdb_clickhouse_cluster" "clickhouse-cluster" {
     assign_public_ip = true # Required for connection from the Internet
   }
 
-  database {
-    name = "db1"
+  lifecycle {
+    ignore_changes = [database, user,]
   }
+}
 
-  user {
-    name     = local.db_username
-    password = local.db_password
-    permission {
-      database_name = "db1"
-    }
+resource "yandex_mdb_clickhouse_database" "db" {
+  cluster_id = yandex_mdb_clickhouse_cluster.clickhouse-cluster.id
+  name       = "db1"
+}
+
+resource "yandex_mdb_clickhouse_user" "user" {
+  cluster_id = yandex_mdb_clickhouse_cluster.clickhouse-cluster.id
+  name       = local.db_username
+  password   = local.db_password
+
+  permission {
+    database_name = yandex_mdb_clickhouse_database.db.name
   }
 }
 
