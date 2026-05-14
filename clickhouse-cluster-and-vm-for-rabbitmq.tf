@@ -61,40 +61,47 @@ resource "yandex_vpc_default_security_group" "clickhouse-and-vm-security-group" 
   }
 }
 
-resource "yandex_mdb_clickhouse_cluster" "clickhouse-cluster" {
+resource "yandex_mdb_clickhouse_cluster_v2" "clickhouse-cluster" {
   description        = "Managed Service for ClickHouse cluster"
   name               = "clickhouse-cluster"
   environment        = "PRODUCTION"
   network_id         = yandex_vpc_network.clickhouse-and-vm-network.id
   security_group_ids = [yandex_vpc_default_security_group.clickhouse-and-vm-security-group.id]
 
-  clickhouse {
-    resources {
+  clickhouse = {
+    resources = {
       resource_preset_id = "s2.micro"
       disk_type_id       = "network-ssd"
       disk_size          = 10 # GB
     }
   }
 
-  host {
-    type             = "CLICKHOUSE"
-    zone             = "ru-central1-a"
-    subnet_id        = yandex_vpc_subnet.subnet-a.id
-    assign_public_ip = true # Required for connection from the Internet
+  hosts = {
+    "ch-host1" = {
+      type             = "CLICKHOUSE"
+      zone             = "ru-central1-a"
+      subnet_id        = yandex_vpc_subnet.subnet-a.id
+      assign_public_ip = true # Required for connection from the Internet
+      shard_name = "shard1"
+    }
   }
 
-  lifecycle {
-    ignore_changes = [database, user,]
+  shards = {
+    "shard1" = {}
+  }
+
+  maintenance_window {
+    type = "ANYTIME"
   }
 }
 
 resource "yandex_mdb_clickhouse_database" "db" {
-  cluster_id = yandex_mdb_clickhouse_cluster.clickhouse-cluster.id
+  cluster_id = yandex_mdb_clickhouse_cluster_v2.clickhouse-cluster.id
   name       = "db1"
 }
 
 resource "yandex_mdb_clickhouse_user" "user" {
-  cluster_id = yandex_mdb_clickhouse_cluster.clickhouse-cluster.id
+  cluster_id = yandex_mdb_clickhouse_cluster_v2.clickhouse-cluster.id
   name       = local.db_username
   password   = local.db_password
 
@@ -108,6 +115,7 @@ resource "yandex_compute_instance" "vm-1" {
 
   name        = "linux-vm"
   platform_id = "standard-v3" # Intel Ice Lake
+  zone        = "ru-central1-a"
 
   resources {
     cores  = 2
